@@ -156,7 +156,7 @@ end
 
 
 @printf "----------------\n"
-@printf "Test parallel bootstrap filter \n"
-@printf "Nbr cores:  %.2f\n" Threads.nthreads() mean(run_time)
+@printf "Test thread-parallel bootstrap filter \n"
+@printf "Nbr threads:  %.2f\n" Threads.nthreads() 
 @printf "Nbr particles: %.2f\n" N
 @printf "Runtime: %.4f\n" mean(run_times)
