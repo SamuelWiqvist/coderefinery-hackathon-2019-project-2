@@ -1,7 +1,7 @@
 #!/bin/bash
 
 nbr_threads=1
-FILE=job_setup_run_thread_parallelized_bootstrap_filter.sh
+FILE=job_run_thread_parallelized_bootstrap_filter.sh
 
 cat > $FILE << EOF
   #!/bin/sh
