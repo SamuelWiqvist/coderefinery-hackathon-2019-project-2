@@ -1,27 +1,29 @@
 #!/bin/bash
 
-nbr_threads1=1
-nbr_threads1=2
-nbr_threads1=3
-nbr_threads1=4
+nbr_threads=10
 
-FILE =job_run_thread_parallelized_bootstrap_filter1.sh
 
-cat > $FILE << EOF
+FILE1=job_run_thread_parallelized_bootstrap_filter1.sh
+
+
+if [ ! -e $FILE1 ]; then
+  echo >> $FILE1
+fi
+
+
+
+cat > $FILE1 << EOF
 #!/bin/sh
-
-
-# Set up for run:
 
 # need this since I use a LU project
 #SBATCH -A lu2019-2-19
 #SBATCH -p lu
 
+# for priority
 #SBATCH --qos=test
 
-# use gpu nodes
 #SBATCH -N 1
-#SBATCH --tasks-per-node=$nbr_threads1
+#SBATCH --tasks-per-node=$nbr_threads
 #SBATCH --exclusive
 
 # time consumption HH:MM:SS
@@ -39,7 +41,6 @@ cat > $FILE << EOF
 #SBATCH --mail-type=ALL
 
 # load modules
-
 ml load GCC/6.4.0-2.28
 ml load OpenMPI/2.1.2
 ml load julia/1.0.0
@@ -49,10 +50,8 @@ pwd
 cd ..
 pwd
 
-export JULIA_NUM_THREADS=$nbr_threads1
+export JULIA_NUM_THREADS=$nbr_threads
 
 # run program
-
 julia /home/samwiq/'coderefinery-hackathon-2019-project-2'/non-linear-time-series-model/bootstrap_filter_thread_parallelization.jl
-
 EOF

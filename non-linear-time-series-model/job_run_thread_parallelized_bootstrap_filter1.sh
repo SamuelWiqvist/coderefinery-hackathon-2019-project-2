@@ -1,15 +1,12 @@
 #!/bin/sh
 
-
-# Set up for run:
-
 # need this since I use a LU project
 #SBATCH -A lu2019-2-19
 #SBATCH -p lu
 
+# for priority
 #SBATCH --qos=test
 
-# use gpu nodes
 #SBATCH -N 1
 #SBATCH --tasks-per-node=10
 #SBATCH --exclusive
@@ -29,7 +26,6 @@
 #SBATCH --mail-type=ALL
 
 # load modules
-
 ml load GCC/6.4.0-2.28
 ml load OpenMPI/2.1.2
 ml load julia/1.0.0
@@ -42,5 +38,4 @@ pwd
 export JULIA_NUM_THREADS=10
 
 # run program
-
 julia /home/samwiq/'coderefinery-hackathon-2019-project-2'/non-linear-time-series-model/bootstrap_filter_thread_parallelization.jl

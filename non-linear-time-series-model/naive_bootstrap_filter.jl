@@ -148,7 +148,7 @@ function sysresample2(wts::Array,N::Int64,uni::Real)
 end
 
 N = 1200 # set nbr particles
-loglik, x_paths = @time bootstrap_naive(y, N, θ_true, true)
+loglik, x_paths = @time bootstrap_naive(y, N, [1;0.5], true)
 
 # likelihood at values ture parameter values -181
 # likelihood at values other parameter values -23900
