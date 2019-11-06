@@ -1,24 +1,16 @@
 include(pwd()*"/non-linear-time-series-model/model.jl")
 
-using PyPlot
+#using PyPlot
 using Random
 using Statistics
-using BenchmarkTools
+using Printf
+#using BenchmarkTools
+
+#using BenchmarkTools
 
 # generate some data from the non-linear model
 Random.seed!(42) # fix
 x,y = generate_data_naive(100)
-
-# Plot data
-PyPlot.figure(figsize=(15,7))
-PyPlot.subplot(211)
-PyPlot.plot(x)
-PyPlot.ylabel("x_t")
-PyPlot.subplot(212)
-PyPlot.plot(y)
-PyPlot.ylabel("y_t")
-PyPlot.xlabel("t")
-
 
 # naive bootstrap filter
 function bootstrap_naive(y::Vector, N::Int, θ::Vector, save_paths::Bool=false)
@@ -78,7 +70,7 @@ end
 # state prop function (using (naive) looping)
 function state_prop!(x::Vector, t::Real, σ_u::Real)
 
-    for i = 1:length(x) # multi thread this!
+    Threads.@threads for i = 1:length(x) # multi thread this!
         x[i] = state_model_step(x[i], t, σ_u)
     end
 
@@ -93,19 +85,19 @@ function calc_weigths(w::Vector, x::Vector, y::Real, σ_v::Real, N::Int)
     w_temp = zeros(N)
 
     # calc w
-    for i in 1:N; logw[i] = log_normalpdf(obs_model_pred(x[i]), σ_v, y); end
+    Threads.@threads for i in 1:N; logw[i] = log_normalpdf(obs_model_pred(x[i]), σ_v, y); end
 
     # find largets wegith
     constant = maximum(logw)
 
     # subtract largets weigth
-    for i in 1:N; w_temp[i] = exp(logw[i] - constant); end
+    Threads.@threads for i in 1:N; w_temp[i] = exp(logw[i] - constant); end
 
     # calc sum of weigths
     w_sum = sum(w_temp)
 
     # normalize weigths
-    for i in 1:N; w_temp[i] = w_temp[i]/w_sum; end
+    Threads.@threads for i in 1:N; w_temp[i] = w_temp[i]/w_sum; end
 
     w[:] = w_temp # updated normalized wegiths
 
@@ -150,32 +142,21 @@ end
 N = 1200 # set nbr particles
 loglik, x_paths = @time bootstrap_naive(y, N, θ_true, true)
 
-# likelihood at values ture parameter values -181
-# likelihood at values other parameter values -23900
 
-
-PyPlot.figure(figsize=(15,3))
-PyPlot.plot(x_paths[:,:]', "r")
-PyPlot.plot(x, "g", linewidth=3.0)
-
-# run benchmark
-julia_naive_bootstrap_bm_res = @benchmark bootstrap_naive(y, N, θ_true, false)
-
-# find number of particles needed for PMMH
 
 N = 1200
 nbr_loglik_est = 500
+
 loglik_vec = zeros(nbr_loglik_est)
+run_times = zeros(nbr_loglik_est)
 
 for i in 1:nbr_loglik_est
-    loglik_vec[i] = bootstrap_naive(y, N, θ_true, false)
+    run_times[i] = @elapsed ll1 =  bootstrap_naive(y, N, θ_true, false)
 end
 
-var(loglik_vec)
 
-# profile naive pf
-using Profile
-
-Profile.clear()
-@profile bootstrap_naive(y, N, θ_true, false)
-Profile.print()
+@printf "----------------\n"
+@printf "Test parallel bootstrap filter \n"
+@printf "Nbr cores:  %.2f\n" Threads.nthreads() mean(run_time)
+@printf "Nbr particles: %.2f\n" N
+@printf "Runtime: %.4f\n" mean(run_times)

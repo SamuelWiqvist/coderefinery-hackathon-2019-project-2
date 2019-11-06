@@ -158,7 +158,14 @@ PyPlot.figure()
 PyPlot.boxplot(bm_res)
 PyPlot.title(nbr_samples)
 
-#=
+
+
+v = @SVector randn(5)
+
+function test(v::SVector)
+
+    return 
+
 m4 = @SMatrix randn(4,4)
 
 @btime inv(m4)
