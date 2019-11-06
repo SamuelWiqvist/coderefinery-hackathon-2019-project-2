@@ -85,19 +85,19 @@ function calc_weigths(w::Vector, x::Vector, y::Real, σ_v::Real, N::Int)
     w_temp = zeros(N)
 
     # calc w
-    Threads.@threads for i in 1:N; logw[i] = log_normalpdf(obs_model_pred(x[i]), σ_v, y); end
+    for i in 1:N; logw[i] = log_normalpdf(obs_model_pred(x[i]), σ_v, y); end
 
     # find largets wegith
     constant = maximum(logw)
 
     # subtract largets weigth
-    Threads.@threads for i in 1:N; w_temp[i] = exp(logw[i] - constant); end
+    for i in 1:N; w_temp[i] = exp(logw[i] - constant); end
 
     # calc sum of weigths
     w_sum = sum(w_temp)
 
     # normalize weigths
-    Threads.@threads for i in 1:N; w_temp[i] = w_temp[i]/w_sum; end
+    for i in 1:N; w_temp[i] = w_temp[i]/w_sum; end
 
     w[:] = w_temp # updated normalized wegiths
 
@@ -157,6 +157,6 @@ end
 
 @printf "----------------\n"
 @printf "Test thread-parallel bootstrap filter \n"
-@printf "Nbr threads:  %.2f\n" Threads.nthreads() 
+@printf "Nbr threads:  %.2f\n" Threads.nthreads()
 @printf "Nbr particles: %.2f\n" N
 @printf "Runtime: %.4f\n" mean(run_times)

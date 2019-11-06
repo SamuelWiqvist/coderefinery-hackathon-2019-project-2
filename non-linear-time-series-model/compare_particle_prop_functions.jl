@@ -9,7 +9,7 @@ using Printf
 using Statistics
 
 
-nbr_samples = 100
+nbr_samples = 10
 
 
 # loop based state prop function
@@ -49,11 +49,14 @@ function state_prop(x::SVector, t::Real)
 
     return x/2 + 25*x./(1+x.^2) .+ 8*cos(1.2*t) + σ_u*noise
 
-    #noise = @SVector rand(length(x))
+end
 
-    #return x/2 + 25*x./(1 .+ x.^2) .+ 8*cos(1.2*t) + σ_u*noise
-    # the part that is caouseing the problems is 25*x./(1 .+ x.^2)
-    #return map(x -> state_model_step(x, t), x)
+
+
+function state_prop(x::SVector, t::Real)
+
+    x = x/2 + 25*x./(1+x.^2) .+ 8*cos(1.2*t)
+    return map(x -> σ_u*rand(), x)
 
 end
 
@@ -70,7 +73,7 @@ state_prop!(x,1)
 x
 
 x = @SVector randn(nbr_samples)
-state_prop(x,1)
+@btime state_prop(x,1)
 x
 
 # map based state prop function
@@ -133,7 +136,7 @@ end
 
 nbr_samples = 20
 
-julia_naive_bm_res = @benchmark state_prop!(x,1) setup=(x=rand(nbr_samples,1))
+julia_naive_bm_res = @benchmark state_prop!(x,1) setup=(x=rand(nbr_samples))
 julia_mvector_loop_bm_res = @benchmark state_prop!(x,1) setup=(x= @MVector rand(nbr_samples))
 julia_svector_vector_bm_res = @benchmark state_prop(x,1) setup=(x= @SVector rand(nbr_samples))
 
@@ -164,7 +167,9 @@ v = @SVector randn(5)
 
 function test(v::SVector)
 
-    return 
+    return NaN
+
+end
 
 m4 = @SMatrix randn(4,4)
 
