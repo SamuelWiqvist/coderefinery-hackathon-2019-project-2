@@ -1,0 +1,9 @@
+/home/samwiq/coderefinery-hackathon-2019-project-2/non-linear-time-series-model
+/home/samwiq/coderefinery-hackathon-2019-project-2
+  0.473112 seconds (1.18 M allocations: 62.322 MiB, 5.36% gc time)
+----------------
+Test thread-parallel bootstrap filter 
+Nbr threads:  1.00
+Nbr particles: 1200.00
+Runtime: 0.0130
+Loglik: -180.4920
