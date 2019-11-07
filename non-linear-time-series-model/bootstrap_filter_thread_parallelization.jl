@@ -4,9 +4,6 @@ include(pwd()*"/non-linear-time-series-model/model.jl")
 using Random
 using Statistics
 using Printf
-#using BenchmarkTools
-
-#using BenchmarkTools
 
 # generate some data from the non-linear model
 Random.seed!(42) # fix
