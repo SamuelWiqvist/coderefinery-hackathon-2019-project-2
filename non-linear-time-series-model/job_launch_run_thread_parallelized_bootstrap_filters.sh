@@ -16,7 +16,7 @@ FILE4="job_run_thread_parallelized_bootstrap_filter_${nbr_threads4}.sh"
 
 # arrays with file names and nbr of threads
 FILES=($FILE1 $FILE2 $FILE3 $FILE4)
-threads=($nbr_threads1 $nbr_threads2 $nbr_threads3 $nbr_threads3)
+threads=($nbr_threads1 $nbr_threads2 $nbr_threads3 $nbr_threads4)
 
 # loop over each file and thread
 for ((i=0;i<=$((${#FILES[@]} - 1));i++)); do

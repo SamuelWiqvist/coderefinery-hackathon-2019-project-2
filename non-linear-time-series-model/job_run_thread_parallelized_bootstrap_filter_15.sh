@@ -8,7 +8,7 @@
 #SBATCH --qos=test
 
 #SBATCH -N 1
-#SBATCH --tasks-per-node=12
+#SBATCH --tasks-per-node=15
 #SBATCH --exclusive
 
 # time consumption HH:MM:SS
@@ -18,8 +18,8 @@
 #SBATCH -J test_thread_parallel_bootstrap
 
 # controll job outputs
-#SBATCH -o lunarc_output/outputs_test_thread_parallel_bootstrap_12_%j.out
-#SBATCH -e lunarc_output/errors_test_thread_parallel_bootstrap_12_%j.err
+#SBATCH -o lunarc_output/outputs_test_thread_parallel_bootstrap_15_%j.out
+#SBATCH -e lunarc_output/errors_test_thread_parallel_bootstrap_15_%j.err
 
 # notification
 #SBATCH --mail-user=samuel.wiqvist@matstat.lu.se
@@ -35,7 +35,7 @@ pwd
 cd ..
 pwd
 
-export JULIA_NUM_THREADS=12
+export JULIA_NUM_THREADS=15
 
 # run program
 julia /home/samwiq/'coderefinery-hackathon-2019-project-2'/non-linear-time-series-model/bootstrap_filter_thread_parallelization.jl
