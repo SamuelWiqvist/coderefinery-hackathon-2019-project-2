@@ -75,7 +75,9 @@ export JULIA_NUM_THREADS=${threads[$i]}
 julia /home/samwiq/'coderefinery-hackathon-2019-project-2'/non-linear-time-series-model/bootstrap_filter_thread_parallelization.jl
 EOF
 
-done
 
-# run scripts 
-sbatch $FILE1
+# run job
+sbatch ${FILES[$i]}
+
+
+done
