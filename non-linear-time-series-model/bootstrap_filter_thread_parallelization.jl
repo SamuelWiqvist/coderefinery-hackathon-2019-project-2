@@ -91,7 +91,7 @@ function state_prop!(x::Vector, t::Real, σ_u::Real, n_threads::Int)
 
         idx = reshape(1:length(x), div(length(x), n_threads), n_threads)
 
-        for j in 1:n_threads
+        Threads.@threads for j in 1:n_threads
             x[idx[:,j]] = _state_prop(x[idx[:,j]], t, σ_u)
         end
 
@@ -178,11 +178,7 @@ end
 N = 1200 # set nbr particles
 loglik, x_paths = @time bootstrap_naive(y, N, θ_true, true)
 
-
-
-N = 1200
 nbr_loglik_est = 500
-
 loglik_vec = zeros(nbr_loglik_est)
 run_times = zeros(nbr_loglik_est)
 
@@ -195,3 +191,4 @@ end
 @printf "Nbr threads:  %.2f\n" Threads.nthreads()
 @printf "Nbr particles: %.2f\n" N
 @printf "Runtime: %.4f\n" mean(run_times)
+@printf "Loglik: %.4f\n" loglik
