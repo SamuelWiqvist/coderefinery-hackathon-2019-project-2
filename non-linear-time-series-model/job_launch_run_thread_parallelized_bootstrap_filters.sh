@@ -5,8 +5,8 @@
 # set number of threads
 nbr_threads1=1
 nbr_threads2=4
-nbr_threads3=12
-nbr_threads4=15
+nbr_threads3=10
+nbr_threads4=20
 
 # set FILE names
 FILE1="job_run_thread_parallelized_bootstrap_filter_${nbr_threads1}.sh"

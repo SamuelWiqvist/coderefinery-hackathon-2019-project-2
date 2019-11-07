@@ -14,6 +14,11 @@ function bootstrap_naive(y::Vector, N::Int, θ::Vector, save_paths::Bool=false)
 
     # pre-allocation
 
+    if mod(N, Threads.nthreads()) != 0
+        error("We must have that mod(N, Threads.nthreads()) == 0")
+    end
+
+    n_threads = Threads.nthreads()
     loglik = 0.
 
     T = length(y) # timesteps
@@ -44,7 +49,7 @@ function bootstrap_naive(y::Vector, N::Int, θ::Vector, save_paths::Bool=false)
             x[:] = x[ind]
 
             # propagate particels
-            state_prop!(x, t, σ_u)
+            state_prop!(x, t, σ_u, n_threads)
 
         end
 
@@ -70,6 +75,40 @@ function state_prop!(x::Vector, t::Real, σ_u::Real)
     Threads.@threads for i = 1:length(x) # multi thread this!
         x[i] = state_model_step(x[i], t, σ_u)
     end
+
+end
+
+
+# state prop function (using (naive) looping)
+function state_prop!(x::Vector, t::Real, σ_u::Real, n_threads::Int)
+
+
+    if n_threads == 1
+
+        state_prop!(x, t, σ_u)
+
+    else
+
+        idx = reshape(1:length(x), div(length(x), n_threads), n_threads)
+
+        for j in 1:n_threads
+            x[idx[:,j]] = _state_prop(x[idx[:,j]], t, σ_u)
+        end
+
+    end
+
+end
+
+function _state_prop(x::Vector, t::Real, σ_u::Real)
+
+    x_new =  zeros(size(x))
+
+    for i = 1:length(x) # multi thread this!
+        x_new[i] = state_model_step(x[i], t, σ_u)
+    end
+
+    return x_new
+
 
 end
 
