@@ -4,7 +4,7 @@ using PyPlot
 
 # generate some data from the non-linear model
 Random.seed!(42) # fix
-x,y = generate_data_naive(100)
+x,y = generate_data_naive(500)
 
 # Plot data
 PyPlot.figure(figsize=(15,7))

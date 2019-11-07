@@ -7,7 +7,7 @@ using Printf
 
 # generate some data from the non-linear model
 Random.seed!(42) # fix
-x,y = generate_data_naive(100)
+x,y = generate_data_naive(500)
 
 # naive bootstrap filter
 function bootstrap_naive(y::Vector, N::Int, θ::Vector, save_paths::Bool=false)
@@ -175,15 +175,15 @@ function sysresample2(wts::Array,N::Int64,uni::Real)
 
 end
 
-N = 1200 # set nbr particles
+N = 5000 # set nbr particles
 loglik, x_paths = @time bootstrap_naive(y, N, θ_true, true)
 
-nbr_loglik_est = 500
+nbr_loglik_est = 200
 loglik_vec = zeros(nbr_loglik_est)
 run_times = zeros(nbr_loglik_est)
 
 for i in 1:nbr_loglik_est
-    run_times[i] = @elapsed ll1 =  bootstrap_naive(y, N, θ_true, false)
+    run_times[i] = @elapsed loglik_vec[i] =  bootstrap_naive(y, N, θ_true, false)
 end
 
 @printf "----------------\n"
@@ -191,4 +191,5 @@ end
 @printf "Nbr threads:  %.2f\n" Threads.nthreads()
 @printf "Nbr particles: %.2f\n" N
 @printf "Runtime: %.4f\n" mean(run_times)
-@printf "Loglik: %.4f\n" loglik
+@printf "Loglik mean: %.4f\n" mean(loglik_vec)
+@printf "Loglik std: %.4f\n" var(loglik_vec)
