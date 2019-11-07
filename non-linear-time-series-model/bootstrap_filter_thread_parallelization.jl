@@ -154,7 +154,6 @@ for i in 1:nbr_loglik_est
     run_times[i] = @elapsed ll1 =  bootstrap_naive(y, N, θ_true, false)
 end
 
-
 @printf "----------------\n"
 @printf "Test thread-parallel bootstrap filter \n"
 @printf "Nbr threads:  %.2f\n" Threads.nthreads()
